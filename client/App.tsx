@@ -12,7 +12,7 @@ function App() {
   const [message, setMessage] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
   useEffect(() => {
-    fetchSlots().then(setSlots);
+    fetchSlots().then((next) => { setSlots(next); });
   }, []);
 
   async function refresh() {
@@ -25,8 +25,7 @@ function App() {
     if (!selected) return;
     try {
       // Optimistically mark the slot as taken so the UI updates instantly
-      selected.taken = true;
-      setSlots(slots);
+      setSlots(slots.map(s => s.id === selected.id ? { ...s, taken: true } : s));
 
       const b = await createBooking({
         slotId: selected.id,

@@ -73,14 +73,11 @@ app.post("/api/bookings", (req: Request, res: Response) => {
   const slot = slots.find((s) => s.id === slotId);
   if (!slot) return res.status(404).json({ error: "slot not found" });
 
-  // Is it already taken?
-  const alreadyBooked = bookings.some((b) => b.slotId === slotId);
-  if (alreadyBooked) {
-    return res.status(409).json({ error: "slot already booked" });
-  }
-
   // Simulate the latency of writing to a database
   setTimeout(() => {
+    if (bookings.some((b) => b.slotId === slotId)) {
+      return res.status(409).json({ error: "slot already booked" });
+    }
     const booking: Booking = {
       id: "b" + (bookings.length + 1),
       slotId,
