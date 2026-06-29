@@ -33,7 +33,7 @@ const bookings: Booking[] = [];
 function generateSlots(): Slot[] {
   // 24 slots, one per hour starting today 00:00 UTC
   const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
+  start.setHours(0, 0, 0, 0);
   const out: Slot[] = [];
   for (let i = 0; i < 24; i++) {
     const dt = new Date(start.getTime() + i * 60 * 60 * 1000);
@@ -53,10 +53,9 @@ app.use(express.json());
 
 app.get("/api/slots", (_req: Request, res: Response) => {
   const taken = new Set(bookings.map((b) => b.slotId));
-  // Filter out slots from earlier today using the date prefix
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date().toISOString();
   const available = slots
-    .filter((s) => s.startsAt > today)
+    .filter((s) => s.startsAt > now)
     .map((s) => ({ ...s, taken: taken.has(s.id) }));
   res.json({ slots: available });
 });
