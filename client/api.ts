@@ -24,8 +24,12 @@ export async function createBooking(input: {
   return r.json();
 }
 
+const OFFICE_TIMEZONE = "America/Argentina/Buenos_Aires";
+
 export function formatSlot(startsAtIso: string): string {
-  // Display in the user's local time
-  const d = new Date(startsAtIso);
-  return d.toLocaleString();
+  return new Date(startsAtIso).toLocaleString("en-US", {
+    timeZone: OFFICE_TIMEZONE,
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
